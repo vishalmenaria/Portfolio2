@@ -1,0 +1,226 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vishal Menaria | Data Analyst</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header id="header">
+    <div class="header-content">
+      <div class="profile-img-container">
+        <img src="/Screenshot 2025-05-18 082648.png" alt="Vishal Menaria Profile Photo" class="profile-img">
+      </div>
+      <h1>Vishal Menaria</h1>
+      <p class="subtitle">Data Analyst | MBA Candidate</p>
+      <nav class="sticky-nav">
+        <ul>
+          <li><a href="#about">About Me</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#certifications">Certifications</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section id="about" class="fade-in-section">
+      <h2><i class="fas fa-user-chart"></i> About Me</h2>
+      <div class="about-content">
+        
+        <p>I'm an MBA student at Sir Padampat Singhania University, Udaipur, specializing in Business Analytics and Marketing. I hold a B.Sc. in Physics, Chemistry, and Mathematics. I also completed a two-month internship as a Data Analyst in the Executive Education Department at IIM Udaipur, where I contributed to data-driven insights. I'm passionate about using data to uncover business insights and have skills in Python, Excel, SQL, and Tableau.</p>
+      </div>
+    </section>
+
+    <section id="skills" class="fade-in-section">
+      <h2><i class="fas fa-tools"></i> Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <i class="fas fa-code"></i>
+          <h3>Programming & Data Analysis</h3>
+          <p>Python (NumPy, Pandas, Scikit-Learn), SQL, Excel</p>
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python Logo" class="skill-logo">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="SQL Logo" class="skill-logo">
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-chart-bar"></i>
+          <h3>Data Visualization</h3>
+          <p>Tableau, Matplotlib, Seaborn</p>
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg" alt="Matplotlib Logo" class="skill-logo">
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-robot"></i>
+          <h3>Machine Learning</h3>
+          <p>Random Forest, Regression, Classification</p>
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/scikitlearn/scikitlearn-original.svg" alt="Scikit-Learn Logo" class="skill-logo">
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-cogs"></i>
+          <h3>Other</h3>
+          <p>Data Cleaning, Wrangling, Modeling</p>
+        </div>
+        <div class="skill-card">
+          <i class="fas fa-users"></i>
+          <h3>Soft Skills</h3>
+          <p>Communication, Teamwork, Problem-Solving, Time Management</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="fade-in-section">
+      <h2><i class="fas fa-project-diagram"></i> Projects</h2>
+      <div class="projects-grid">
+        <div class="project-card">
+          <img src="/98-500x500.webp" alt="Coffee Shop Dashboard" class="project-img">
+          <div class="project-overlay">
+            <h3>Coffee Shop Sales Analysis</h3>
+            <p>Analyzed multi-store sales data using Excel, built a dashboard showing sales, order size, and peak hours.</p>
+            <a href="https://github.com/vishalmenaria/Coffee-Shop-Sales-Analysis" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> View Project</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <img src="/360_F_751041915_irWDOhhiBlfgZBolYM13PYD1gVujb27a.jpg" alt="E-commerce Chart" class="project-img">
+          <div class="project-overlay">
+            <h3>E-commerce Customer Behaviour Analysis</h3>
+            <p>Explored customer demographics and purchase patterns using Python. Built a Random Forest model with 98.5% accuracy to predict customer satisfaction.</p>
+            <a href="https://github.com/vishalmenaria/E-Commerce-Consumer-Behavior-Analysis" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> View Project</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="certifications" class="fade-in-section">
+      <h2><i class="fas fa-certificate"></i> Certifications</h2>
+      <ul class="certifications-list">
+        <li><i class="fas fa-check-circle"></i> Python Data Structures – University of Michigan (Coursera)</li>
+        <li><i class="fas fa-check-circle"></i> Programming for Everybody – University of Michigan (Coursera)</li>
+        <li><i class="fas fa-check-circle"></i> Fundamentals of Visualization with Tableau – University of California, Davis</li>
+        <li><i class="fas fa-check-circle"></i> Meta Data Analyst (Ongoing)</li>
+        <li><i class="fas fa-check-circle"></i> Python for Data Analyst – IIT Roorkee (NPTEL, Ongoing)</li>
+        <li><i class="fas fa-check-circle"></i> RS-CIT</li>
+      </ul>
+    </section>
+
+    <section id="contact" class="fade-in-section">
+      <h2><i class="fas fa-envelope"></i> Contact</h2>
+      <div class="contact-content">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSczGUauI4SMzSWlIAg6fXOItGc3HmY9Il-TcSxEdxvbbASE7g/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        <div class="contact-info">
+          <p><i class="fas fa-envelope contact-icon"></i> Email: <a href="mailto:vishalkun530@gmail.com">vishalkun530@gmail.com</a></p>
+          <p><i class="fas fa-phone contact-icon"></i> Phone: <a href="tel:+918114494484">+91 8114494484</a></p>
+          <p><i class="fab fa-github contact-icon"></i> GitHub: <a href="https://github.com/vishalmenaria" target="_blank">github.com/vishalmenaria</a></p>
+          <p><i class="fab fa-linkedin contact-icon"></i> LinkedIn: <a href="https://www.linkedin.com/in/vishal-menaria-0a0586349/" target="_blank">linkedin.com/in/vishal-menaria-0a0586349</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Vishal Menaria. All rights reserved.</p>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" title="Back to Top"><i class="fas fa-arrow-up"></i></button>
+
+  <script>
+    // Smooth Scrolling
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const section = document.querySelector(this.getAttribute('href'));
+        section.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Sticky Navigation
+    const nav = document.querySelector('.sticky-nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        nav.classList.add('fixed');
+      } else {
+        nav.classList.remove('fixed');
+      }
+    });
+
+    // Back to Top Button
+    const backToTopButton = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopButton.style.display = 'block';
+      } else {
+        backToTopButton.style.display = 'none';
+      }
+    });
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Scroll Reveal Animation
+    const sections = document.querySelectorAll('.fade-in-section');
+    const options = {
+      threshold: 0.2
+    };
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, options);
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+
+    // Console Welcome Message
+    console.log("Welcome to Vishal Menaria's Portfolio!");
+  </script>
+</body>
+</html>
